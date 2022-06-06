@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 use App\Post;
 use App\Category;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -33,7 +34,8 @@ class PostController extends Controller
     {
         //
         $categories = Category::all();
-        return view('admin.posts.create', compact('categories'));
+        $tags = Tag::all();
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -48,11 +50,13 @@ class PostController extends Controller
         $request->validate([
             'title'=>'required|max:250',
             'content' => 'required',
-            'category_id' => 'exists:categories,id', // ci assicuriamo che o sia nulla o che esista
+            'category_id' => 'exists:categories,id',
+            'tags[]' => 'exists:tags,id'// ci assicuriamo che o sia nulla o che esista
         ], [
             'title.required' => 'Il campo è obbligatorio',
             'content.required' => 'Il campo è obbligatorio',
-            'category_id.exists' => 'La categoria non esiste'
+            'category_id.exists' => 'La categoria non esiste',
+            'tags[]' => 'Tag non esiste'
         ]);
 
         $postData = $request->all();
@@ -71,6 +75,16 @@ class PostController extends Controller
         }
 
         $newPost->slug = $alternativeSlug;
+
+
+        // prima di aggiungere i tag bisogna salvare la prima parte dei dati ricevuti,
+        // altrimenti non si potrebbe creare l'associazione nella tabella pivot
+        $newPost->save();
+        // add tags
+        if(array_key_exists('tags', $postData)){
+            $newPost->tags()->sync($postData['tags']);
+        }
+
         $newPost->save();
         return redirect()->route('admin.posts.show', $newPost->id);
 
@@ -102,7 +116,8 @@ class PostController extends Controller
         //
         $post = Post::findOrFail($id);
         $categories = Category::all();
-        return view('admin.posts.edit', compact('post', 'categories'));
+        $tags = Tag::all();
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -119,10 +134,12 @@ class PostController extends Controller
             'title'=>'required|max:250',
             'content' => 'required',
             'category_id' => 'exists:categories,id', // ci assicuriamo che o sia nulla o che esista
+            'tags' => 'exists:tags,id'
         ], [
             'title.required' => 'Il campo è obbligatorio',
             'content.required' => 'Il campo è obbligatorio',
-            'category_id.exist' => 'Campo obbligatorio'
+            'category_id.exist' => 'Campo obbligatorio',
+            'tags[]' => 'Tag non esistente'
         ]);
 
         $postData = $request->all();
@@ -142,6 +159,15 @@ class PostController extends Controller
         }
 
         $editedPost->slug = $alternativeSlug;
+
+        // prima di aggiungere i tag bisogna salvare la prima parte dei dati ricevuti,
+        // altrimenti non si potrebbe creare l'associazione nella tabella pivot
+        $editedPost->save();
+        // add tags
+        if(array_key_exists('tags', $postData)){
+            $editedPost->tags()->sync($postData['tags']);
+        }
+
         $editedPost->update();
         return redirect()->route('admin.posts.show', $editedPost->id);
 
@@ -157,7 +183,9 @@ class PostController extends Controller
     {
         //
         $post = Post::find($id);
+        $post->tags()->sync([]); // per cancellare nella tabella pivot
         $post->delete();
+
         return redirect()->route('admin.posts.index');
     }
 }
