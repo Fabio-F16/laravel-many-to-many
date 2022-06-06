@@ -40,6 +40,31 @@
                 @enderror
             </div>
 
+            {{-- checkbox tags --}}
+            <div class="mb-3">
+                <label class="col-4" for="description">Tags:</label>
+                @foreach ($tags as $tag)
+                    @if ($errors->any())
+                        <div>
+                            <label>{{ $tag->name }}</label>
+                            <input type="checkbox" value="{{ $tag->id }}" name="tags[]"
+                                {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }} />
+                        </div>
+                    @else
+                        <div>
+                            <label>{{ $tag->name }}</label>
+                            <input type="checkbox" value="{{ $tag->id }}" name="tags[]"
+                                {{ $post->tags->contains($tag) ? 'checked' : '' }} />
+                        </div>
+                    @endif
+                @endforeach
+                @error('tags')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+
+
             <input class="mb-4 btn btn-success" type="submit" value="Modifica">
         </form>
 
