@@ -41,19 +41,14 @@
 
 
             {{-- checkbok tags --}}
-
             <div class="mb-3">
                 <label class="col-4" for="description">Tags:</label>
-
                 @foreach ($tags as $tag)
                     <div>
                         <label>{{ $tag->name }}</label>
                         <input type="checkbox" value="{{ $tag->id }}" name="tags[]" />
                     </div>
                 @endforeach
-
-
-
                 @error('tags[]')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
