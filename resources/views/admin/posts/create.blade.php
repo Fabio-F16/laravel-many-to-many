@@ -46,7 +46,8 @@
                 @foreach ($tags as $tag)
                     <div>
                         <label>{{ $tag->name }}</label>
-                        <input type="checkbox" value="{{ $tag->id }}" name="tags[]" />
+                        <input type="checkbox" value="{{ $tag->id }}" name="tags[]"
+                            {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }} />
                     </div>
                 @endforeach
                 @error('tags[]')
