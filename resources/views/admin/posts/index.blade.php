@@ -10,10 +10,19 @@
                 <h1>{{ $post->title }}</h1>
                 <p> Categoria: {{ $post->category->name }}</p>
                 <p> {{ $post->content }}</p>
+                @foreach ($post->tags as $tag)
+                    <span>#{{ $tag->name }}</span>
+                @endforeach
+
 
                 {{-- <a href="{{ route('admin.posts.edit', $post->id) }}">Modifica</a> --}}
-                <a class="btn btn-warning mb-4" href="{{ route('admin.posts.edit', $post->id) }}">Modifica</a>
-                <a class="btn btn-info mb-4" href="{{ route('admin.posts.show', $post->id) }}">Vedi nel dettaglio</a>
+                <div>
+                    <a class="btn btn-warning mb-4" href="{{ route('admin.posts.edit', $post->id) }}">Modifica</a>
+                </div>
+                <div>
+                    <a class="btn btn-info mb-4" href="{{ route('admin.posts.show', $post->id) }}">Vedi nel dettaglio</a>
+                </div>
+
 
                 <form action="{{ route('admin.posts.destroy', $post->id) }}" method="post">
                     @csrf

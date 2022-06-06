@@ -12,6 +12,10 @@
             <h1>{{ $post->title }}</h1>
             <p> {{ $post->category->name }}</p>
             <p> {{ $post->content }}</p>
+            <p>Tag:</p>
+            @foreach ($post->tags as $tag)
+                <span>#{{ $tag->name }}</span>
+            @endforeach
 
 
             <form action="{{ route('admin.posts.destroy', $post->id) }}" method="post">
