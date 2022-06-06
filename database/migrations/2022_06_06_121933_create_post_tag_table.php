@@ -14,8 +14,8 @@ class CreatePostTagTable extends Migration
     public function up()
     {
         Schema::create('post_tag', function (Blueprint $table) {
-            // $table->id();
-            // $table->timestamps();
+            // $table->id(); // tabella pivot, non sono necessari
+            // $table->timestamps(); // tabella pivot, non sono necessari
             $table->unsignedBigInteger('post_id');
             $table->foreign('post_id')->references('id')->on('posts');
 
