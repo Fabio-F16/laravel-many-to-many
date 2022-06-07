@@ -11,6 +11,7 @@
 
             <h1>{{ $post->title }}</h1>
             <p> {{ $post->category->name }}</p>
+            <img src="{{ asset('storage/' . $post->cover) }}" alt="{{ $post->title }}">
             <p> {{ $post->content }}</p>
             <p>Tag:</p>
             @foreach ($post->tags as $tag)

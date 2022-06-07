@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h2 class="text-center mb-4">Modifica il post!</h2>
-        <form action="{{ route('admin.posts.update', $post->id) }}" method="post">
+        <form action="{{ route('admin.posts.update', $post->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('put')
             <div class="mb-3">
@@ -14,6 +14,16 @@
                 @enderror
             </div>
 
+
+            {{-- immagine --}}
+            <div class="mb-3">
+                <div>
+                    <label for="image">Cambia immagine</label>
+                </div>
+
+                <img src="{{ asset('storage/' . $post->cover) }}" alt="{{ $post->title }}">
+                <input type="file" name="image" />
+            </div>
 
             {{-- select one to many category --}}
             <div class="mb-3">

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h2 class="text-center mb-4">Crea il tuo nuovo post!</h2>
-        <form action="{{ route('admin.posts.store') }}" method="post">
+        <form action="{{ route('admin.posts.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label class="col-4" for="title">Titolo:</label>
@@ -13,6 +13,11 @@
                 @enderror
             </div>
 
+            {{-- immagine --}}
+            <div>
+                <label for="image">Inserisci immagine</label>
+                <input type="file" name="image" />
+            </div>
 
             {{-- select one to many category --}}
             <div class="mb-3">
