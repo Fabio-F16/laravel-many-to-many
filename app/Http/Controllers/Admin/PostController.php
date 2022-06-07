@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 use App\Post;
 use App\Category;
@@ -51,15 +52,22 @@ class PostController extends Controller
             'title'=>'required|max:250',
             'content' => 'required',
             'category_id' => 'exists:categories,id',
-            'tags[]' => 'exists:tags,id'// ci assicuriamo che o sia nulla o che esista
+            'tags[]' => 'exists:tags,id', // ci assicuriamo che o sia nulla o che esista
+            'image' => 'nullable|image'
         ], [
             'title.required' => 'Il campo è obbligatorio',
             'content.required' => 'Il campo è obbligatorio',
             'category_id.exists' => 'La categoria non esiste',
-            'tags[]' => 'Tag non esiste'
+            'tags[]' => 'Tag non esiste',
+            'image' => 'Il file deve essere un\'immagine'
         ]);
 
         $postData = $request->all();
+
+        if(array_key_exists('image', $postData)){
+            $img_path = Storage::put('uploads', $postData['image']);
+            $postData['cover'] = $img_path;
+        }
         $newPost = new Post;
         $newPost->fill($postData);
         $slug = Str::slug($newPost->title);
@@ -143,7 +151,17 @@ class PostController extends Controller
         ]);
 
         $postData = $request->all();
+
         $editedPost = Post::findOrFail($id);
+
+        // immagine upload
+        if(array_key_exists('image', $postData)){
+            Storage::delete($editedPost->cover);
+            $img_path = Storage::put('uploads', $postData['image']);
+            $postData['cover'] = $img_path;
+        }
+
+
         $editedPost->fill($postData);
 
         $slug = Str::slug($editedPost->title);
@@ -184,6 +202,9 @@ class PostController extends Controller
         //
         $post = Post::find($id);
         $post->tags()->sync([]); // per cancellare nella tabella pivot
+        if($post->cover){
+            Storage::delete($post->cover);
+        }
         $post->delete();
 
         return redirect()->route('admin.posts.index');
