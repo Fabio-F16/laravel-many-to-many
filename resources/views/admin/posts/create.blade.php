@@ -60,7 +60,7 @@
 
         <a class="btn btn-primary mb-4" href="{{ route('admin.posts.index') }}"> <i class="fa-solid fa-arrow-left"></i>
             Torna ai post</a>
-        {{-- errori --}}
+        {{-- errori generali standard --}}
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
