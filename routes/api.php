@@ -13,7 +13,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+// api predisposta per gli utenti che hanno fatto i login, restituisce l'utente autorizzato
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//  per rispettare rest inseriamo /posts
+// la rotta restituisce l'api del Postcontroller alla funzione index
+Route::get('/posts', 'Api\PostController@index')->name('posts.index');
